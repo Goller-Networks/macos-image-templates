@@ -17,7 +17,7 @@
             <string>xterm-256color</string>
         </dict>
         <key>WorkingDirectory</key>
-        <string>/Users/admin</string>
+        <string>/Users/sean</string>
         <key>RunAtLoad</key>
         <true/>
         <key>KeepAlive</key>

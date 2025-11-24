@@ -17,8 +17,8 @@ source "tart-cli" "tart" {
   cpu_count    = 4
   memory_gb    = 8
   disk_size_gb = 50
-  ssh_password = "admin"
-  ssh_username = "admin"
+  ssh_password = "sean"
+  ssh_username = "sean"
   ssh_timeout  = "180s"
   boot_command = [
     # hello, hola, bonjour, etc.
@@ -42,7 +42,7 @@ source "tart-cli" "tart" {
     # Data & Privacy
     "<wait10s><leftShiftOn><tab><leftShiftOff><spacebar>",
     # Create a Mac Account
-    "<wait10s><tab><tab><tab><tab><tab><tab>Managed via Tart<tab>admin<tab>admin<tab>admin<tab><tab><spacebar><tab><tab><spacebar>",
+    "<wait10s><tab><tab><tab><tab><tab><tab>Managed via Tart<tab>sean<tab>sean<tab>sean<tab><tab><spacebar><tab><tab><spacebar>",
     # Enable Voice Over
     "<wait120s><leftAltOn><f5><leftAltOff>",
     # Sign In with Your Apple ID
@@ -90,14 +90,14 @@ source "tart-cli" "tart" {
     "<wait10s><leftAltOn>q<leftAltOff>",
     # Disable Gatekeeper (1/2)
     "<wait10s>sudo spctl --global-disable<enter>",
-    "<wait10s>admin<enter>",
+    "<wait10s>sean<enter>",
     # Disable Gatekeeper (2/2)
     # On Tahoe opening System Settings through Spotlight is not very reliable, sometimes opens System information
     "<wait10s>open '/System/Applications/System Settings.app'<enter>",
     "<wait10s><leftCtrlOn><f2><leftCtrlOff><right><right><right><down>Privacy & Security<enter>",
     "<wait10s><leftShiftOn><tab><tab><tab><tab><tab><leftShiftOff>",
     "<wait10s><down><wait1s><down><wait1s><enter>",
-    "<wait10s>admin<enter>",
+    "<wait10s>sean<enter>",
     "<wait10s><leftShiftOn><tab><leftShiftOff><wait1s><spacebar>",
     # Quit System Settings
     "<wait10s><leftAltOn>q<leftAltOff>",
@@ -117,15 +117,15 @@ build {
   provisioner "shell" {
     inline = [
       // Enable passwordless sudo
-      "echo admin | sudo -S sh -c \"mkdir -p /etc/sudoers.d/; echo 'admin ALL=(ALL) NOPASSWD: ALL' | EDITOR=tee visudo /etc/sudoers.d/admin-nopasswd\"",
+      "echo sean | sudo -S sh -c \"mkdir -p /etc/sudoers.d/; echo 'sean ALL=(ALL) NOPASSWD: ALL' | EDITOR=tee visudo /etc/sudoers.d/sean-nopasswd\"",
       // Enable auto-login
       //
       // See https://github.com/xfreebird/kcpassword for details.
       "echo '00000000: 1ced 3f4a bcbc ba2c caca 4e82' | sudo xxd -r - /etc/kcpassword",
-      "sudo defaults write /Library/Preferences/com.apple.loginwindow autoLoginUser admin",
+      "sudo defaults write /Library/Preferences/com.apple.loginwindow autoLoginUser sean",
       // Disable screensaver at login screen
       "sudo defaults write /Library/Preferences/com.apple.screensaver loginWindowIdleTime 0",
-      // Disable screensaver for admin user
+      // Disable screensaver for sean user
       "defaults -currentHost write com.apple.screensaver idleTime 0",
       // Prevent the VM from sleeping
       "sudo systemsetup -setsleep Off 2>/dev/null",
@@ -141,7 +141,7 @@ build {
       //
       // Note that this only works if the user is logged-in,
       // i.e. not on login screen.
-      "sysadminctl -screenLock off -password admin",
+      "sysadminctl -screenLock off -password sean",
     ]
   }
 

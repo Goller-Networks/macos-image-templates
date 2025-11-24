@@ -24,8 +24,8 @@ source "tart-cli" "tart" {
   vm_name      = "${var.vm_name}"
   cpu_count    = 4
   memory_gb    = 8
-  ssh_password = "admin"
-  ssh_username = "admin"
+  ssh_password = "sean"
+  ssh_username = "sean"
   ssh_timeout  = "120s"
 }
 

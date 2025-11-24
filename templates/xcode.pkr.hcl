@@ -65,8 +65,8 @@ source "tart-cli" "tart" {
   memory_gb    = 8
   disk_size_gb = var.disk_size
   headless     = true
-  ssh_password = "admin"
-  ssh_username = "admin"
+  ssh_password = "sean"
+  ssh_username = "sean"
   ssh_timeout  = "120s"
 }
 
@@ -76,7 +76,7 @@ locals {
       type = "shell"
       inline = [
         "source ~/.zprofile",
-        "sudo xcodes install ${version} --experimental-unxip --path /Users/admin/Downloads/Xcode_${version}.xip --select --empty-trash",
+        "sudo xcodes install ${version} --experimental-unxip --path /Users/sean/Downloads/Xcode_${version}.xip --select --empty-trash",
         // get selected xcode path, strip /Contents/Developer and move to GitHub compatible locations
         "INSTALLED_PATH=$(xcodes select -p)",
         "CONTENTS_DIR=$(dirname $INSTALLED_PATH)",
@@ -114,7 +114,7 @@ build {
   // make sure our workaround from base is still valid
   provisioner "shell" {
     inline = [
-      "sudo ln -s /Users/admin /Users/runner || true"
+      "sudo ln -s /Users/sean /Users/runner || true"
     ]
   }
 
@@ -147,7 +147,7 @@ build {
 
   provisioner "file" {
     sources      = [ for version in var.xcode_version : pathexpand("~/XcodesCache/Xcode_${version}.xip")]
-    destination = "/Users/admin/Downloads/"
+    destination = "/Users/sean/Downloads/"
   }
 
   provisioner "shell" {
@@ -247,7 +247,7 @@ build {
     labels = ["file"]
     content {
       source      = var.expected_runtimes_file
-      destination = "/Users/admin/runtimes.expected.txt"
+      destination = "/Users/sean/runtimes.expected.txt"
     }
   }
 
@@ -258,9 +258,9 @@ build {
     content {
       inline = [
         "source ~/.zprofile",
-        "xcrun simctl list runtimes > /Users/admin/runtimes.actual.txt",
-        "diff -q /Users/admin/runtimes.actual.txt /Users/admin/runtimes.expected.txt || (echo 'Simulator runtimes do not match expected list' && cat /Users/admin/runtimes.actual.txt && exit 1)",
-        "rm /Users/admin/runtimes.actual.txt /Users/admin/runtimes.expected.txt"
+        "xcrun simctl list runtimes > /Users/sean/runtimes.actual.txt",
+        "diff -q /Users/sean/runtimes.actual.txt /Users/sean/runtimes.expected.txt || (echo 'Simulator runtimes do not match expected list' && cat /Users/sean/runtimes.actual.txt && exit 1)",
+        "rm /Users/sean/runtimes.actual.txt /Users/sean/runtimes.expected.txt"
       ]
     }
   }
@@ -359,7 +359,7 @@ build {
   # [2]: https://github.com/actions/runner-images/discussions/7607
   provisioner "shell" {
     inline = [
-      "sudo chown admin /usr/local/bin"
+      "sudo chown sean /usr/local/bin"
     ]
   }
 

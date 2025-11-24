@@ -24,8 +24,8 @@ variable "pause_before" {
 
 source "tart-cli" "tart" {
   vm_name      = "${var.vm_name}"
-  ssh_password = "admin"
-  ssh_username = "admin"
+  ssh_password = "sean"
+  ssh_username = "sean"
   ssh_timeout  = "120s"
 }
 
