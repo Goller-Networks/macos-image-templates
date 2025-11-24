@@ -1,0 +1,72 @@
+name: Build Vanilla Images
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'templates/vanilla-tahoe.pkr.hcl'
+      - 'templates/vanilla-sonoma.pkr.hcl'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  REGISTRY_NAMESPACE: Goller-Networks
+
+jobs:
+  build-vanilla:
+    name: Build ${{ matrix.macos_version }} Vanilla
+    runs-on: [self-hosted, macOS, ARM64]
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        macos_version:
+          - tahoe
+          - sonoma
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Packer init
+        run: packer init templates/vanilla-${{ matrix.macos_version }}.pkr.hcl
+
+      - name: Build vanilla image
+        run: packer build templates/vanilla-${{ matrix.macos_version }}.pkr.hcl
+
+      - name: Resolve macOS version number
+        id: resolve
+        run: |
+          RESOLVE_VM_NAME="resolve-macos-number-${{ github.run_id }}-${{ matrix.macos_version }}"
+          RESOLVE_FILE="${RESOLVE_VM_NAME}.txt"
+
+          packer init templates/resolve-macos-number.pkr.hcl
+          packer build \
+            -var "vm_base_name=${{ matrix.macos_version }}-vanilla" \
+            -var "vm_name=${RESOLVE_VM_NAME}" \
+            -var "resolve_file=${RESOLVE_FILE}" \
+            templates/resolve-macos-number.pkr.hcl
+
+          MACOS_NUMBER=$(cat ${RESOLVE_FILE})
+          echo "macos_number=${MACOS_NUMBER}" >> $GITHUB_OUTPUT
+
+          rm ${RESOLVE_FILE}
+          tart delete ${RESOLVE_VM_NAME}
+
+      - name: Login to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | tart login ${{ env.REGISTRY }} --username ${{ github.actor }} --password-stdin
+
+      - name: Push images
+        run: |
+          tart push ${{ matrix.macos_version }}-vanilla \
+            ${{ env.REGISTRY }}/${{ env.REGISTRY_NAMESPACE }}/macos-${{ matrix.macos_version }}-vanilla:latest \
+            ${{ env.REGISTRY }}/${{ env.REGISTRY_NAMESPACE }}/macos-${{ matrix.macos_version }}-vanilla:${{ steps.resolve.outputs.macos_number }}
+
+      - name: Cleanup
+        if: always()
+        run: |
+          tart delete ${{ matrix.macos_version }}-vanilla || true
