@@ -58,7 +58,7 @@ variable "android_sdk_tools_version" {
 }
 
 source "tart-cli" "tart" {
-  vm_base_name = "ghcr.io/cirruslabs/macos-${var.macos_version}-base:latest"
+  vm_base_name = "ghcr.io/Goller-Networks/macos-${var.macos_version}-base:latest"
   // use tag or the last element of the xcode_version list
   vm_name      = "${var.macos_version}-xcode:${var.tag != "" ? var.tag : var.xcode_version[0]}"
   cpu_count    = 4
